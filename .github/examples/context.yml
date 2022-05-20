@@ -1,0 +1,33 @@
+name: Context testing
+on: pull_request
+
+jobs:
+  functions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: dump
+        run: |
+          echo ${{ contains( 'hello', 'll' ) }}
+          echo ${{ startsWith( 'hello', 'he' ) }}
+          echo ${{ endsWith( 'hello', 'lo' ) }}
+          echo ${{ format('Hello {0} {1} {2}', 'World', '!', '!') }}
+          
+  dump_contexts_to_log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        id: github_context_step
+        run: eccho '${{ toJSON(github) }}'
+        continue-on-error: true
+      - name: Dump job context
+        run: echo '${{ toJSON(job) }}'
+        continue-on-error: true
+      - name: Dump steps context
+        run: echo '${{ toJSON(steps) }}'
+        if: always()
+      - name: Dump runner context
+        run: echo '${{ toJSON(runner) }}'
+      - name: Dump strategy context
+        run: echo '${{ toJSON(strategy) }}'
+      - name: Dump matrix context
+        run: echo '${{ toJSON(matrix) }}'
